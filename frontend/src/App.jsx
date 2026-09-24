@@ -1,122 +1,63 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import DecisionForm from './components/DecisionForm'
+import ResultModal from './components/ResultModal'
+import { getRecommendation } from './lib/api'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [status, setStatus] = useState('idle') // idle | loading | error | done
+  const [result, setResult] = useState(null)
+  const [error, setError] = useState(null)
+
+  async function handleSubmit(payload) {
+    setStatus('loading')
+    setError(null)
+    try {
+      const data = await getRecommendation(payload)
+      setResult(data)
+      setStatus('done')
+    } catch (err) {
+      setError(err.message)
+      setStatus('error')
+    }
+  }
+
+  function handleClose() {
+    setStatus('idle')
+    setResult(null)
+  }
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <header className="hero">
+        <p className="hero-eyebrow">4th &amp; Long</p>
+        <h1>Should you go for it?</h1>
+        <p className="hero-sub">
+          Enter the game situation below. Three models, trained on real NFL
+          play-by-play data, each estimate the expected points added if you go
+          for it, kick, or punt.
+        </p>
+      </header>
 
-      <div className="ticks"></div>
+      <main>
+        <DecisionForm onSubmit={handleSubmit} isLoading={status === 'loading'} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {status === 'error' && (
+          <div className="panel error-banner" role="alert">
+            <strong>Couldn&rsquo;t get a recommendation.</strong> {error}
+            <div className="error-hint">
+              Is the backend running? (<code>python app.py</code> in{' '}
+              <code>backend/</code>)
+            </div>
+          </div>
+        )}
+      </main>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      {status === 'done' && result && <ResultModal result={result} onClose={handleClose} />}
+
+      <footer className="footer">
+        Predictions are model estimates from historical outcomes, not guarantees.
+      </footer>
     </>
   )
 }
-
-export default App
