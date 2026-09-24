@@ -1,0 +1,92 @@
+{
+  "GO": {
+    "mean": {
+      "yardline_100": 37.213294982910156,
+      "ydstogo": 4.4486002922058105,
+      "score_differential": -7.065825939178467,
+      "game_seconds_remaining": 1133.2703857421875,
+      "score_after_fg": -4.065825939178467
+    },
+    "std": {
+      "yardline_100": 22.063005447387695,
+      "ydstogo": 4.796085357666016,
+      "score_differential": 12.084653854370117,
+      "game_seconds_remaining": 1052.232177734375,
+      "score_after_fg": 12.084653854370117
+    },
+    "min": {
+      "yardline_100": 1.0,
+      "ydstogo": 1.0,
+      "score_differential": -56.0,
+      "game_seconds_remaining": 0.0,
+      "score_after_fg": -53.0
+    },
+    "max": {
+      "yardline_100": 99.0,
+      "ydstogo": 43.0,
+      "score_differential": 42.0,
+      "game_seconds_remaining": 3552.0,
+      "score_after_fg": 45.0
+    }
+  },
+  "FIELD_GOAL": {
+    "mean": {
+      "yardline_100": 19.80857276916504,
+      "ydstogo": 7.360629558563232,
+      "score_differential": 0.6499537229537964,
+      "game_seconds_remaining": 1673.8265380859375,
+      "score_after_fg": 3.649953603744507
+    },
+    "std": {
+      "yardline_100": 10.038744926452637,
+      "ydstogo": 4.766232967376709,
+      "score_differential": 9.348531723022461,
+      "game_seconds_remaining": 997.3489379882812,
+      "score_after_fg": 9.348531723022461
+    },
+    "min": {
+      "yardline_100": 1.0,
+      "ydstogo": 1.0,
+      "score_differential": -41.0,
+      "game_seconds_remaining": 0.0,
+      "score_after_fg": -38.0
+    },
+    "max": {
+      "yardline_100": 49.0,
+      "ydstogo": 33.0,
+      "score_differential": 42.0,
+      "game_seconds_remaining": 3525.0,
+      "score_after_fg": 45.0
+    }
+  },
+  "PUNT": {
+    "mean": {
+      "yardline_100": 65.90633392333984,
+      "ydstogo": 8.921000480651855,
+      "score_differential": -0.3534965515136719,
+      "game_seconds_remaining": 1840.3525390625,
+      "score_after_fg": 2.646503448486328
+    },
+    "std": {
+      "yardline_100": 14.250598907470703,
+      "ydstogo": 5.968354225158691,
+      "score_differential": 10.553316116333008,
+      "game_seconds_remaining": 1019.9963989257812,
+      "score_after_fg": 10.553316116333008
+    },
+    "min": {
+      "yardline_100": 30.0,
+      "ydstogo": 1.0,
+      "score_differential": -52.0,
+      "game_seconds_remaining": 7.0,
+      "score_after_fg": -49.0
+    },
+    "max": {
+      "yardline_100": 99.0,
+      "ydstogo": 46.0,
+      "score_differential": 52.0,
+      "game_seconds_remaining": 3588.0,
+      "score_after_fg": 55.0
+    }
+  }
+}
