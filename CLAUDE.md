@@ -427,6 +427,48 @@ If picking this project back up for further work, the natural next things
 somehow (e.g. surfacing "how does this compare to real coaching?" in the
 dashboard itself), or the interaction-sparsity guardrail gap.
 
+## Deployment (2026-09-23)
+
+User connected the GitHub repo to Vercel and got a 404 — root cause: this is
+a monorepo (`frontend/`/`backend/` as separate top-level folders, nothing at
+repo root), so Vercel had nothing to build without being told the app lives
+in `frontend/`. Bigger issue underneath that: the `/api` proxy in
+`vite.config.js` is a **Vite dev-server-only** feature — it doesn't exist in
+a production build, so even a correctly-deployed frontend would have nowhere
+for its API calls to go. **Recommended split: Vercel for the frontend
+(static), Render for the backend** (a normal persistent Python process —
+avoids fighting PyTorch against serverless size limits).
+
+Code made deploy-ready (by Claude, at the user's request):
+- `backend/requirements.txt` (didn't exist before — deps were only ever
+  pip-installed ad hoc into the local venv). Scoped to what `app.py`/
+  `decision_engine.py` actually import at runtime (`flask`, `torch`) plus
+  `flask-cors` and `gunicorn` for production — **not** `pandas`/
+  `nfl_data_py` (only used by the offline notebooks/`train_wp.py`/
+  `backtest.py`, never imported by the server). Uses PyTorch's own CPU-wheel
+  index (`--extra-index-url https://download.pytorch.org/whl/cpu`) so the
+  build doesn't pull a multi-GB CUDA build.
+- `backend/app.py`: added `flask_cors.CORS(app)` (installed locally too) —
+  needed once frontend and backend are on different domains in production;
+  the local dev proxy hid this entirely before. Wide open (`*`) for now;
+  scoping to the real Vercel domain once known is a easy tightening, not
+  done yet.
+- `frontend/src/lib/api.js`: `fetch('/api/recommend')` → `fetch(`${API_BASE}/api/recommend`)`
+  where `API_BASE = import.meta.env.VITE_API_URL ?? ''` — empty locally
+  (keeps using the dev proxy unchanged), set to the real Render URL via a
+  Vercel env var in production. `.env.example` added documenting this.
+- Verified locally after all of the above: `npm run lint`/`npm run build`
+  clean, backend restarted and confirmed still responding correctly with the
+  new `Access-Control-Allow-Origin` header present.
+
+**Not done, and can't be done by Claude — needs the user's own accounts:**
+setting Vercel's Project Settings → Root Directory → `frontend`; creating a
+Render account/service pointed at `backend/`, build command
+`pip install -r requirements.txt`, start command `gunicorn app:app`; setting
+`VITE_API_URL` in Vercel's dashboard to the resulting Render URL once it
+exists; redeploying both. None of this has been done yet as of this note —
+the code is ready for it, the actual hosting setup is still pending.
+
 Notebooks so far (VS Code + Jupyter, kernel = the `4thDownAnalyzer` venv — VS Code
 must be connected to the WSL remote for that kernel to be visible/selectable):
 - `notebooks/01_explore.ipynb` — Stage 1 exploration.
