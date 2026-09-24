@@ -1,0 +1,9 @@
+# What the running server actually needs (backend/app.py + decision_engine.py).
+# pandas/nfl_data_py/jupyter aren't listed -- they're only used by the offline
+# notebooks/train_wp.py/backtest.py scripts, never imported by the server
+# itself, so leaving them out keeps the deployed build smaller.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.0
+flask==3.1.3
+flask-cors==6.0.5
+gunicorn==26.2.0

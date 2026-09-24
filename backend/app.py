@@ -1,7 +1,15 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from decision_engine import recommend, recommend_wp, feature_names
 
 app = Flask(__name__)
+# Frontend and backend are deployed on different domains in production
+# (Vercel + Render), so the browser needs an explicit CORS allow -- there's
+# no dev-server proxy to hide behind like there is locally. Wide open for
+# now since this is a small public tool with no auth/sensitive data; scope
+# this to the real Vercel domain (origins=["https://your-app.vercel.app"])
+# once you know it, for a bit of extra hygiene.
+CORS(app)
 
 @app.route('/api/recommend', methods=['POST'])
 def view():
